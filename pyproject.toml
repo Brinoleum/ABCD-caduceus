@@ -1,0 +1,21 @@
+[project]
+name = "caduceus"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "causal-conv1d",
+    "mamba-ssm",
+    "pandas-plink>=2.3.2",
+    "pyfaidx>=0.8.1.4",
+    "pyliftover>=0.4.1",
+    "torch>=2.7.1",
+    "torchaudio>=2.7.1",
+    "torchvision>=0.22.1",
+    "transformers>=4.53.0",
+]
+
+[tool.uv.sources]
+causal-conv1d = { path = "causal-conv1d" }
+mamba-ssm = { path = "mamba" }

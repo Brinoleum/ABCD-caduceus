@@ -1,0 +1,6 @@
+[submodule "causal-conv1d"]
+	path = causal-conv1d
+	url = https://github.com/Dao-AILab/causal-conv1d
+[submodule "mamba"]
+	path = mamba
+	url = https://github.com/state-spaces/mamba
