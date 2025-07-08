@@ -5,10 +5,9 @@ from pandas_plink import read_plink1_bin
 from pyliftover import LiftOver
 from pyfaidx import Fasta
 
-
-snp_file    = "ABCD-data/ABCD_202209.updated.nodups.curated.cleaned_indivs.bed"
-phenotypes  = "ABCD-data/mh_y_ksads_gad.csv"
-genome_file = "genomes/ncbi_dataset/data/GCF_000001405.40/GCF_000001405.40_GRCh38.p14_genomic.fna"
+snp_file    = "data/plink/ABCD_202209.updated.nodups.curated.cleaned_indivs.bed"
+phenotypes  = "data/pheno/mh_y_ksads_gad.csv" # placeholder for now, using the KSADS anxiety metric
+genome_file = "data/hg38/hg38.fa"
 mtChr       = "NC_012920.1" # label from NCBI hg38 dataset
 
 
@@ -38,10 +37,9 @@ def read_variants(sample):
 from torch.utils.data import Dataset
 
 class SNPDataset(Dataset):
-    def __init__(self, tokenizer):
+    def __init__(self):
         self.samples = get_samples()
         self.phenos = P.set_index("src_subject_id")["ksads_gad_raw_273_t"].to_dict()
-        self.tokenizer = tokenizer
 
     def __len__(self):
         return len(self.samples)
