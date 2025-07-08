@@ -22,16 +22,25 @@ def get_samples():
 
 @np.vectorize
 def convert_coordinate(coord):
-    _, out, _, _ = L.convert_coordinate("chrM", coord)[0]
+    converted = L.convert_coordinate("chrM", coord)
+    
+    try:
+        assert converted is not None and len(converted) == 1
+    except:
+        return -1
+
+    _, out, _, _ = converted[0]
     return out
 
 def read_variants(sample):
     table = G.where(G.chrom=="26", drop=True).where(G.sample==sample, drop=True)
     # a1 is the reference in the plink file, indices offset by 1
     # coordinate N in the table converts to N-1 in liftover
-    positions, mutations = convert_coordinate(table.pos.to_numpy()-1), table.a0.to_numpy()
+    # skip invalid coordinate conversions
+    data = np.array([convert_coordinate(table.pos.to_numpy()-1), table.a0.to_numpy()]).T
     out = np.array(list(mtDna.seq))
-    out[positions] = mutations
+    data = data[data[:, 0] != -1]
+    out[data[:, 0].astype(int)] = data[:, 1]
     return "".join(out)
 
 from torch.utils.data import Dataset
@@ -39,7 +48,7 @@ from torch.utils.data import Dataset
 class SNPDataset(Dataset):
     def __init__(self):
         self.samples = get_samples()
-        self.phenos = P.set_index("src_subject_id")["ksads_gad_raw_273_t"].to_dict()
+        self.phenos = P.set_index("src_subject_id")["ksads_gad_raw_273_t"].fillna(0).to_dict()
 
     def __len__(self):
         return len(self.samples)
