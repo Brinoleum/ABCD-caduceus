@@ -46,14 +46,16 @@ def read_variants(sample):
 from torch.utils.data import Dataset
 
 class SNPDataset(Dataset):
-    def __init__(self):
+    def __init__(self, tokenizer):
         self.samples = get_samples()
-        self.phenos = P.set_index("src_subject_id")["ksads_gad_raw_273_t"].fillna(0).to_dict()
+        self.phenos = P.set_index("src_subject_id")["ksads_gad_raw_273_t"].fillna(0).astype(int).to_dict()
+        self.tokenizer = tokenizer
 
     def __len__(self):
         return len(self.samples)
 
     def __getitem__(self, idx):
         sample = self.samples[idx]
-        return read_variants(sample), self.phenos[sample]
+        encoding = self.tokenizer(read_variants(sample), return_tensors='pt')
+        return {"input_ids": encoding["input_ids"].flatten(), "labels": torch.tensor(self.phenos[sample], dtype=torch.long)}
 
