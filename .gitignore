@@ -10,4 +10,4 @@ wheels/
 .venv
 
 # ignore data dir since it's just symlinked to the server data
-data/
+data
