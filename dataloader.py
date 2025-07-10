@@ -47,9 +47,12 @@ from torch.utils.data import Dataset
 
 class SNPDataset(Dataset):
     def __init__(self, tokenizer):
-        self.samples = get_samples()
-        self.phenos = P.set_index("src_subject_id")["ksads_gad_raw_273_t"].fillna(0).astype(int).to_dict()
+        samples = get_samples()
+        self.phenos = P.groupby("src_subject_id")["ksads_gad_raw_273_t"].max().fillna(0).astype(int).to_dict()
         self.tokenizer = tokenizer
+        
+        # align pheno ids with plink ids - ids referenced in the plink are sometimes not in the csv
+        self.samples = samples[np.isin(samples, np.array(list(self.phenos.keys())))]
 
     def __len__(self):
         return len(self.samples)
