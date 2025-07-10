@@ -48,6 +48,8 @@ from torch.utils.data import Dataset
 class SNPDataset(Dataset):
     def __init__(self, tokenizer):
         samples = get_samples()
+        # csv is formatted with two rows per subject: baseline and 2-year followup
+        # take the maximum of the two
         self.phenos = P.groupby("src_subject_id")["ksads_gad_raw_273_t"].max().fillna(0).astype(int).to_dict()
         self.tokenizer = tokenizer
         
