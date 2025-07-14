@@ -6,7 +6,7 @@ from pyliftover import LiftOver
 from pyfaidx import Fasta
 
 snp_file    = "data/plink/ABCD_202209.updated.nodups.curated.cleaned_indivs.bed"
-phenotypes  = "data/pheno/mh_y_ksads_adhd.csv" 
+phenotypes  = "data/pheno/mh_p_ksads_adhd.csv" 
 genome_file = "data/hg38/hg38.fa"
 mtChr       = "NC_012920.1" # label from NCBI hg38 dataset
 
