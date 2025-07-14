@@ -15,3 +15,7 @@ data/
 
 # ignore wandb
 wandb/
+
+# ignore nohup logfiles
+*.out
+*.err
