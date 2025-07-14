@@ -6,7 +6,7 @@ from pyliftover import LiftOver
 from pyfaidx import Fasta
 
 snp_file    = "data/plink/ABCD_202209.updated.nodups.curated.cleaned_indivs.bed"
-phenotypes  = "data/pheno/mh_y_ksads_gad.csv" # placeholder for now, using the KSADS anxiety metric
+phenotypes  = "data/pheno/mh_y_ksads_adhd.csv" 
 genome_file = "data/hg38/hg38.fa"
 mtChr       = "NC_012920.1" # label from NCBI hg38 dataset
 
@@ -50,7 +50,7 @@ class SNPDataset(Dataset):
         samples = get_samples()
         # csv is formatted with two rows per subject: baseline and 2-year followup
         # take the maximum of the two
-        self.phenos = P.groupby("src_subject_id")["ksads_gad_raw_273_t"].max().fillna(0).astype(int).to_dict()
+        self.phenos = P.groupby("src_subject_id")["ksads_adhd_raw_414_p"].max().fillna(0).astype(int).to_dict()
         self.tokenizer = tokenizer
         
         # align pheno ids with plink ids - ids referenced in the plink are sometimes not in the csv
