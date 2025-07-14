@@ -19,3 +19,6 @@ wandb/
 # ignore nohup logfiles
 *.out
 *.err
+
+# ignore checkpoints
+caduceus-output/
