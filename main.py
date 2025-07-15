@@ -25,8 +25,8 @@ def main():
     # optimizer = AdamW(model.parameters(), lr=8e-3, weight_decay=0.01, betas=(0.95, 0.9), )
     # scheduler = get_cosine_schedule_with_warmup(
     #         optimizer,
-    #         num_warmup_steps=500,           # about 5-10% of the total training steps
-    #         num_training_steps=int(0.8*len(data)),
+    #         num_warmup_steps=100,           # about 5-10% of the total training steps
+    #         num_training_steps=1166
     #         )
     args = TrainingArguments(
             output_dir="./caduceus-output",
@@ -52,7 +52,7 @@ def main():
                       args=args,
                       train_dataset = train, 
                       eval_dataset = test,
-    #                  optimizers=(optimizer, scheduler)
+    #                   optimizers=(optimizer, scheduler)
                       )
     trainer.train()
     
