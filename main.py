@@ -6,6 +6,7 @@ from transformers import (AutoModelForSequenceClassification,
 from bitsandbytes.optim import AdamW
 from dataloader import SNPDataset
 from torch.utils.data import random_split
+from torch.nn.init import xavier_normal_
 import wandb
 import os
 os.environ["WANDB_PROJECT"] = "ABCD-caduceus"
@@ -16,7 +17,8 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels = 5,trust_remote_code=True)
     data = SNPDataset(tokenizer)
-    
+    xavier_normal_(model.score.weight)        # reinitialize classification head to normal distribution to avoid NaN errors
+
     '''
     following training regimen in the paper:
     - change optimizer and scheduler to cosine annealing
@@ -36,7 +38,8 @@ def main():
             num_train_epochs=2,
             save_steps=500,
             save_safetensors=False,         # model is setup such that safetensors can't save properly
-            bf16=True,
+            bf16=True,                    # no mixed precision for now
+            max_grad_norm=1.0,              # gradient clipping to prevent NaN
             report_to="wandb",
             logging_steps=1,
             dataloader_num_workers=4,
