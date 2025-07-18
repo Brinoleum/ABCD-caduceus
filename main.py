@@ -14,7 +14,7 @@ os.environ["WANDB_PROJECT"] = "ABCD-caduceus"
 def main():
     model_name = "kuleshov-group/caduceus-ps_seqlen-131k_d_model-256_n_layer-16"
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    model = AutoModelForSequenceClassification.from_pretrained(model_name, trust_remote_code=True)
+    model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels = 5,trust_remote_code=True)
     data = SNPDataset(tokenizer)
     
     '''
