@@ -8,7 +8,7 @@ You should have [UV](https://docs.astral.sh/uv) installed on your computer. Pack
 To download all dependencies, run `uv sync --no-build-isolation`
 
 ### Important note
-The `causal-conv1d` and `mamba` packages are dependencies of the (Caduceus implementation)[https://huggingface.co/kuleshov-group/caduceus-ps_seqlen-131k_d_model-256_n_layer-16] on Huggingface, and are provided in this repo as Git submodules.
+The `causal-conv1d` and `mamba` packages are dependencies of the [Caduceus implementation](https://huggingface.co/kuleshov-group/caduceus-ps_seqlen-131k_d_model-256_n_layer-16) on Huggingface, and are provided in this repo as Git submodules.
 Depending on your setup it may or may not be necessary to build and install these packages locally before installing the rest of the project, as the PyPI provided implementations rely on Nvidia CUDA drivers.
 If you run AMD graphics or older Nvidia cards with older CUDA drivers, it may be necessary to build locally:
 * `cd` into the `causal-conv1d` directory and run `uv pip install . --no-build-isolation`
