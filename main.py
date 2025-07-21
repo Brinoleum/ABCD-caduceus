@@ -17,7 +17,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     model = CaduceusOrdinalRegressor(model_name)
     data = SNPDataset(tokenizer)
-    
+
     '''
     following training regimen in the paper:
     - change optimizer and scheduler to cosine annealing
@@ -34,12 +34,13 @@ def main():
             run_name="nikola-single-gpu+AdamW+Cosine",
             per_device_train_batch_size=4, # make it a nice round power of 2
             gradient_accumulation_steps=4,
-            num_train_epochs=2,
+            num_train_epochs=5,
             save_steps=500,
             save_safetensors=False,         # model is setup such that safetensors can't save properly
             bf16=True,
             max_grad_norm=1.0,              # gradient clipping to prevent NaN
             report_to="wandb",
+            eval_strategy="epoch",
             logging_steps=1,
             dataloader_num_workers=4,
             dataloader_pin_memory=True,
