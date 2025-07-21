@@ -1,13 +1,13 @@
-from transformers import (AutoModelForSequenceClassification, 
-                          AutoTokenizer, 
+from transformers import (AutoTokenizer, 
                           Trainer, 
                           TrainingArguments,
-                          get_cosine_schedule_with_warmup,)
+                          get_cosine_schedule_with_warmup,
+                          )
+from model import CaduceusOrdinalRegressor
+from metrics import compute_ordinal_metrics
 from bitsandbytes.optim import AdamW
 from dataloader import SNPDataset
 from torch.utils.data import random_split
-from torch.nn.init import xavier_normal_
-import wandb
 import os
 os.environ["WANDB_PROJECT"] = "ABCD-caduceus"
 
@@ -15,10 +15,9 @@ os.environ["WANDB_PROJECT"] = "ABCD-caduceus"
 def main():
     model_name = "kuleshov-group/caduceus-ps_seqlen-131k_d_model-256_n_layer-16"
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels = 5,trust_remote_code=True)
+    model = CaduceusOrdinalRegressor(model_name)
     data = SNPDataset(tokenizer)
-    xavier_normal_(model.score.weight)        # reinitialize classification head to normal distribution to avoid NaN errors
-
+    
     '''
     following training regimen in the paper:
     - change optimizer and scheduler to cosine annealing
@@ -55,7 +54,8 @@ def main():
                       args=args,
                       train_dataset = train, 
                       eval_dataset = test,
-                      optimizers=(optimizer, scheduler)
+                      optimizers=(optimizer, scheduler),
+                      compute_metrics=compute_ordinal_metrics
                       )
     trainer.train()
     

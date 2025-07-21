@@ -17,3 +17,6 @@ class CaduceusTrainer(Trainer):
     def create_optimizer(self):
         self.optimizer = AdamW(self.model.parameters(), lr=8e-3, weight_decay=0.01, betas=(0.95, 0.9))
         return self.optimizer
+
+    # no custom loss function for ordinal regression, 
+    # should already be included in the model implementation

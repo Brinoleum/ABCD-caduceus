@@ -11,6 +11,7 @@ dependencies = [
     "pandas-plink>=2.3.2",
     "pyfaidx>=0.8.1.4",
     "pyliftover>=0.4.1",
+    "scikit-learn>=1.7.1",
     "torch>=2.7.1",
     "torchaudio>=2.7.1",
     "torchvision>=0.22.1",
