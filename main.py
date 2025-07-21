@@ -4,8 +4,8 @@ from transformers import (AutoTokenizer,
                           get_cosine_schedule_with_warmup,
                           )
 from model import CaduceusOrdinalRegressor
+from trainer import CaduceusTrainer
 from metrics import compute_ordinal_metrics
-from bitsandbytes.optim import AdamW
 from dataloader import SNPDataset
 from torch.utils.data import random_split
 import os
@@ -18,17 +18,6 @@ def main():
     model = CaduceusOrdinalRegressor(model_name)
     data = SNPDataset(tokenizer)
 
-    '''
-    following training regimen in the paper:
-    - change optimizer and scheduler to cosine annealing
-    - batch size = 2^20 tokens per batch with a sequence length of 16569bp ~= 63
-    '''
-    optimizer = AdamW(model.parameters(), lr=8e-3, weight_decay=0.01, betas=(0.95, 0.9), )
-    scheduler = get_cosine_schedule_with_warmup(
-            optimizer,
-            num_warmup_steps=100,           # about 5-10% of the total training steps
-            num_training_steps=1166
-            )
     args = TrainingArguments(
             output_dir="./caduceus-output",
             run_name="nikola-single-gpu+AdamW+Cosine",
@@ -51,12 +40,11 @@ def main():
 
     train, test = random_split(data, [0.8, 0.2])
 
-    trainer = Trainer(model,
-                      args=args,
-                      train_dataset = train, 
-                      eval_dataset = test,
-                      optimizers=(optimizer, scheduler),
-                      compute_metrics=compute_ordinal_metrics
+    trainer = CaduceusTrainer(model,
+                              args=args,
+                              train_dataset = train, 
+                              eval_dataset = test,
+                              compute_metrics=compute_ordinal_metrics
                       )
     trainer.train()
     
