@@ -1,7 +1,5 @@
 from transformers import (AutoTokenizer, 
-                          Trainer, 
                           TrainingArguments,
-                          get_cosine_schedule_with_warmup,
                           )
 from model import CaduceusOrdinalRegressor
 from trainer import CaduceusTrainer
@@ -15,7 +13,6 @@ os.environ["WANDB_PROJECT"] = "ABCD-caduceus"
 def main():
     model_name = "kuleshov-group/caduceus-ps_seqlen-131k_d_model-256_n_layer-16"
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-    model = CaduceusOrdinalRegressor(model_name)
     data = SNPDataset(tokenizer)
 
     args = TrainingArguments(
@@ -39,15 +36,36 @@ def main():
             )
 
     train, test = random_split(data, [0.8, 0.2])
-
-    trainer = CaduceusTrainer(model,
+    
+    def model_init():
+        return CaduceusOrdinalRegressor(model_name)
+    
+    trainer = CaduceusTrainer(model=None,
                               args=args,
                               train_dataset = train, 
                               eval_dataset = test,
-                              compute_metrics=compute_ordinal_metrics
+                              compute_metrics=compute_ordinal_metrics,
+                              model_init=model_init
                       )
-    trainer.train()
     
+    def wandb_hp_space(trial):
+        return {
+            {"method": "bayes",
+             "metric": {"name": "objective", "goal": "minimize"},
+             "parameters": {
+                 "learning_rate": {"distribution": "uniform", "min": 1e-6, "max": 1e-4},
+                 "per_device_train_batch_size": {"values": [1, 2, 4, 8]}
+             }}
+        }
+    
+    best_trials = trainer.hyperparameter_search(
+        direction=["minimize", "maximize"],
+        backend="wandb",
+        hp_space=wandb_hp_space,
+        n_trials=20,
+    )
+
+    print(f"Optimized Parameters: {best_trials.hyperparameters}")
 
 if __name__ == "__main__":
     main()
