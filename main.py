@@ -50,13 +50,12 @@ def main():
     
     def wandb_hp_space(trial):
         return {
-            {"method": "bayes",
-             "metric": {"name": "objective", "goal": "minimize"},
-             "parameters": {
-                 "learning_rate": {"distribution": "uniform", "min": 1e-6, "max": 1e-4},
-                 "per_device_train_batch_size": {"values": [1, 2, 4, 8]}
-             }}
-        }
+                "method": "bayes",
+                "metric": {"name": "eval_loss", "goal": "minimize"},
+                "parameters": {
+                        "learning_rate": {"distribution": "uniform", "min": 1e-6, "max": 1e-4},
+                        "per_device_train_batch_size": {"values": [1, 2, 4, 8]}
+                }}
     
     best_trials = trainer.hyperparameter_search(
         direction=["minimize", "maximize"],
