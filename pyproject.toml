@@ -8,6 +8,7 @@ dependencies = [
     "bitsandbytes>=0.46.1",
     "causal-conv1d",
     "mamba-ssm",
+    "optuna>=4.4.0",
     "pandas-plink>=2.3.2",
     "pyfaidx>=0.8.1.4",
     "pyliftover>=0.4.1",
