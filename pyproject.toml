@@ -10,6 +10,7 @@ dependencies = [
     "mamba-ssm",
     "optuna>=4.4.0",
     "pandas-plink>=2.3.2",
+    "peft>=0.17.0",
     "pyfaidx>=0.8.1.4",
     "pyliftover>=0.4.1",
     "scikit-learn>=1.7.1",
