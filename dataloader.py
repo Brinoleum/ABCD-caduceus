@@ -64,3 +64,13 @@ class SNPDataset(Dataset):
         encoding = self.tokenizer(read_variants(sample), return_tensors='pt')
         return {"input_ids": encoding["input_ids"].flatten(), "labels": torch.tensor(self.phenos[sample], dtype=torch.long)}
 
+class FakeDataset(SNPDataset):
+    """
+    sanity check to see if the model will converge as expected
+    keep giving it the same data and it should learn to only predict the same thing
+    """
+
+    def __getitem__(self, idx):
+        sample = self.samples[0]
+        encoding = self.tokenizer(read_variants(sample), return_tensors='pt')
+        return {"input_ids": encoding["input_ids"].flatten(), "labels": torch.tensor(self.phenos[sample], dtype=torch.long)}
